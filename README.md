@@ -21,12 +21,13 @@
 
 ## 📸 Screenshots
 
-| Map View | Marker Info Window |
-|:---:|:---:|
-| ![Map View](assets/screenshots/map_view.png) | ![Info Window](assets/screenshots/info_window.png) |
-| Real-time location on Google Maps | Tap marker to see coordinates |
+<div align="center">
 
-> *(Screenshots from the sample assignment — app displays live GPS data on a real device)*
+<img src="assets/screenshots/screenshot1.png" width="300" alt="Real-Time Location Tracker - Map View with Marker Info Window"/>
+
+*📍 Real-time GPS tracking — Marker info window showing coordinates (23.830868, 90.381353) with 8 tracked points and live status card*
+
+</div>
 
 ---
 
