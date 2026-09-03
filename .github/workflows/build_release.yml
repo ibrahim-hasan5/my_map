@@ -1,0 +1,102 @@
+name: 🚀 Build & Release APK
+
+on:
+  push:
+    branches:
+      - main
+      - master
+  workflow_dispatch:  # Manual trigger from GitHub UI
+
+# Allow the workflow to create releases
+permissions:
+  contents: write
+
+jobs:
+  build-and-release:
+    name: Build Flutter APK & Create Release
+    runs-on: ubuntu-latest
+
+    steps:
+      # ── 1. Checkout code ───────────────────────────────────────────────
+      - name: 📥 Checkout Repository
+        uses: actions/checkout@v4
+
+      # ── 2. Set up Java 17 (required by Android Gradle) ────────────────
+      - name: ☕ Set up Java 17
+        uses: actions/setup-java@v4
+        with:
+          distribution: 'zulu'
+          java-version: '17'
+
+      # ── 3. Set up Flutter ──────────────────────────────────────────────
+      - name: 🐦 Set up Flutter
+        uses: subosito/flutter-action@v2
+        with:
+          channel: 'stable'
+          cache: true
+
+      # ── 4. Show Flutter version ────────────────────────────────────────
+      - name: 🔍 Flutter Version Info
+        run: flutter --version
+
+      # ── 5. Install dependencies ────────────────────────────────────────
+      - name: 📦 Install Dependencies
+        run: flutter pub get
+
+      # ── 6. Analyze code (optional but good practice) ──────────────────
+      - name: 🔎 Analyze Code
+        run: flutter analyze --no-fatal-infos
+        continue-on-error: true
+
+      # ── 7. Build Release APK ───────────────────────────────────────────
+      - name: 🏗️ Build Release APK
+        run: flutter build apk --release --no-tree-shake-icons
+
+      # ── 8. Rename APK with version tag ────────────────────────────────
+      - name: 📝 Rename APK
+        run: |
+          VERSION=$(grep 'version:' pubspec.yaml | head -1 | awk '{print $2}')
+          cp build/app/outputs/flutter-apk/app-release.apk \
+             build/app/outputs/flutter-apk/RealTimeLocationTracker-v${VERSION}.apk
+          echo "APK_NAME=RealTimeLocationTracker-v${VERSION}.apk" >> $GITHUB_ENV
+          echo "VERSION=${VERSION}" >> $GITHUB_ENV
+
+      # ── 9. Upload APK as artifact (backup) ────────────────────────────
+      - name: 📤 Upload APK Artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: release-apk
+          path: build/app/outputs/flutter-apk/app-release.apk
+          retention-days: 7
+
+      # ── 10. Create GitHub Release & attach APK ─────────────────────────
+      - name: 🎉 Create GitHub Release
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: v${{ env.VERSION }}-${{ github.run_number }}
+          name: "📱 Real-Time Location Tracker v${{ env.VERSION }}"
+          body: |
+            ## 📱 Real-Time Location Tracker
+
+            ### ✨ Features
+            - 🗺️ **Google Maps** — Smooth camera animation to your GPS location
+            - 📍 **Real-Time Tracking** — Location updates every 10 seconds
+            - 🔵 **Polyline Drawing** — Tracks your movement path on the map
+            - 💬 **Info Window** — Tap the marker to see coordinates
+
+            ### 📲 How to Install
+            1. Download `${{ env.APK_NAME }}` below
+            2. Transfer to your Android phone
+            3. Enable **Install from Unknown Sources** in Settings
+            4. Open the APK file to install
+            5. Allow **Location Permission** when prompted
+
+            ### ℹ️ Build Info
+            - **Build:** #${{ github.run_number }}
+            - **Commit:** ${{ github.sha }}
+            - **Branch:** ${{ github.ref_name }}
+          files: build/app/outputs/flutter-apk/${{ env.APK_NAME }}
+          draft: false
+          prerelease: false
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
