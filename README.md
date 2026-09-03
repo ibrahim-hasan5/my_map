@@ -23,7 +23,8 @@
 
 <div align="center">
 
-<img src="assets/screenshots/screenshot1.png" width="300" alt="Real-Time Location Tracker - Map View with Marker Info Window"/>
+<img width="720" height="1600" alt="image" src="https://github.com/user-attachments/assets/cdfb64a5-95db-45da-897a-c0694e4e0275" />
+
 
 *📍 Real-time GPS tracking — Marker info window showing coordinates (23.830868, 90.381353) with 8 tracked points and live status card*
 
