@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <base href="$FLUTTER_BASE_HREF">
+
+  <meta charset="UTF-8">
+  <meta content="IE=Edge" http-equiv="X-UA-Compatible">
+  <meta name="description" content="Real-Time Location Tracker Flutter App">
+
+  <!-- iOS meta tags & icons -->
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black">
+  <meta name="apple-mobile-web-app-title" content="Real-Time Location Tracker">
+  <link rel="apple-touch-icon" href="icons/Icon-192.png">
+
+  <!-- Favicon -->
+  <link rel="icon" type="image/png" href="favicon.png"/>
+
+  <title>Real-Time Location Tracker</title>
+  <link rel="manifest" href="manifest.json">
+</head>
+<body>
+  <script>
+    // This function is called by the Maps JS API once it has fully loaded.
+    // Only then do we boot Flutter, guaranteeing window.google.maps exists.
+    function googleMapsReady() {
+      var script = document.createElement('script');
+      script.src = 'flutter_bootstrap.js';
+      script.async = true;
+      document.body.appendChild(script);
+    }
+  </script>
+
+  <!-- Google Maps JavaScript API: callback=googleMapsReady ensures Flutter
+       starts only AFTER the Maps library is fully initialised. -->
+  <script
+    src="https://maps.googleapis.com/maps/api/js?key=AIzaSyA8u7vfhR66hA6_B5NsXDgZMJhrDxAdXuI&callback=googleMapsReady"
+    async defer>
+  </script>
+</body>
+</html>
